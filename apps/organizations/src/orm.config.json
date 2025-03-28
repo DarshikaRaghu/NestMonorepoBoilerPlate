@@ -1,0 +1,12 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "username": "postgres",
+    "password": "postgres",
+    "database": "organizations_db_nest",
+    "entities": ["src/**/*.entity.ts"],
+    "migrations": ["src/migrations/*.ts"],
+    "cli": {
+      "migrationsDir": "src/migrations"
+    }
+  }
