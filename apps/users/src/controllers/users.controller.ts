@@ -1,10 +1,11 @@
 // apps/users/src/users.controller.ts
 import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, Inject, UseGuards } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { UsersService } from '../services/users.service';
+import { User } from '../entities/user.entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { GET_ORGANIZATION_EVENT } from '../constants/constants';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -65,7 +66,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User or organization not found' })
   async getUserOrganization(@Param('id') userId: number, @Param('orgId') orgId: string) {
     const user = await this.usersService.findOne(userId);    
-    const organization = await this.organizationClient.send('get_organization', { id: orgId }).toPromise();
+    const organization = await this.organizationClient.send(GET_ORGANIZATION_EVENT, { id: orgId }).toPromise();
     
     return {
       user,

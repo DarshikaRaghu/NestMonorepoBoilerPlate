@@ -1,12 +1,16 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { OrganizationsService } from './organizations.service';
-import { Organization } from './entities/organization.entity';
+import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { OrganizationsService } from '../services/organizations.service';
+import { Organization } from '../entities/organization.entity';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ClientProxy } from '@nestjs/microservices';
+import { GET_USER_EVENT } from '../constants/constanst';
 
 @ApiTags('organizations')
 @Controller('organization')
 export class OrganizationsController {
-  constructor(private readonly organizationsService: OrganizationsService) {}
+  constructor(private readonly organizationsService: OrganizationsService,
+      @Inject('USERS_SERVICE') private readonly usersClient: ClientProxy,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -58,5 +62,20 @@ export class OrganizationsController {
   @ApiResponse({ status: 404, description: 'Organization not found' })
   async getOrganization(@Param('id') id: number): Promise<Organization|null> {
     return this.organizationsService.findOne(id);
+  }
+
+  @Get(':id/users/:userId')
+  @ApiOperation({ summary: 'Get organization with users details' })
+  @ApiParam({ name: 'id', description: 'organization ID' })
+  @ApiParam({ name: 'userId', description: 'users ID' })
+  @ApiResponse({ status: 200, description: 'Return user with organization details' })
+  @ApiResponse({ status: 404, description: 'User or organization not found' })
+  async getUserOrganization(@Param('id') orgId: number, @Param('userId') userId: number) {
+    const organization = await this.organizationsService.findOne(orgId);    
+    const user = await this.usersClient.send(GET_USER_EVENT, { id: userId }).toPromise();
+    return {
+      user,
+      organization,
+    };
   }
 }

@@ -1,8 +1,8 @@
 import { Controller, Post, Body, UnauthorizedException, ConflictException } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UsersService } from './users.service';
+import { AuthService } from '../services/auth.service';
+import { UsersService } from '../services/users.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
+import { User } from '../entities/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')

@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { UsersRepository } from './users.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { OrganizationEventsController } from './controllers/organization-events.controller';
+import { UsersController } from './controllers/users.controller';
+import { AuthController } from './controllers/auth.controller';
+import { UsersService } from './services/users.service';
+import { UsersRepository } from './repositories/users.repository';
+import { AuthService } from './services/auth.service';
+import { UsersEventsController } from './controllers/users-events.controller';
 
 @Module({
   imports: [
@@ -42,7 +42,7 @@ import { OrganizationEventsController } from './controllers/organization-events.
   controllers: [
     UsersController, 
     AuthController,
-    OrganizationEventsController
+    UsersEventsController
   ],
   providers: [UsersService, UsersRepository, AuthService, JwtStrategy],
   exports: [UsersService, AuthService],
