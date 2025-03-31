@@ -2,13 +2,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { typeOrmConfig } from './config/database.config';
+import { UsersModule } from '../application/features/users/users.module';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './apps/organizations/src/.env', // Use the local .env file
+      envFilePath: './apps/users/src/.env', // Use the local .env file
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -20,15 +21,14 @@ import { typeOrmConfig } from './config/database.config';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [User],
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsTableName: 'migrations',
         synchronize: configService.get<string>('NODE_ENV') === 'development',
         autoLoadEntities: true,
       }),
     }),
-    TypeOrmModule.forRoot(typeOrmConfig),
+    UsersModule,
   ],
-  // ...
 })
 export class AppModule {}

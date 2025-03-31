@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
-import { OrganizationsService } from '../services/organizations.service';
-import { GET_ORGANIZATION_EVENT } from '../constants/constanst';
+import { OrganizationsService } from './services/organizations.service';
+import { GET_ORGANIZATION_EVENT } from '../constanst';
 
 
 @Controller()
-export class OrganizationEventsController {
+export class OrganizationEventsExecutor {
   constructor(private readonly organizationService: OrganizationsService) {}
 
   @EventPattern(GET_ORGANIZATION_EVENT)

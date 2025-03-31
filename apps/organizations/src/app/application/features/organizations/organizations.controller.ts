@@ -1,15 +1,18 @@
-import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { OrganizationsService } from '../services/organizations.service';
-import { Organization } from '../entities/organization.entity';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { OrganizationsService } from './services/organizations.service';
+import { Organization } from '../../../infrastructure/entities/organization.entity';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
-import { GET_USER_EVENT } from '../constants/constanst';
+import { GET_USER_EVENT } from '../constanst';
+import { IOrganizationRepo } from './repositories/i-organizations-repo';
+import { JwtAuthGuard } from 'apps/users/src/app/application/features/auth/guards/jwt-auth.guard';
 
 @ApiTags('organizations')
 @Controller('organization')
 export class OrganizationsController {
   constructor(private readonly organizationsService: OrganizationsService,
-      @Inject('USERS_SERVICE') private readonly usersClient: ClientProxy,
+    @Inject('USERS_SERVICE') private readonly usersClient: ClientProxy,
+    @Inject("IOrganizationsRepo") private readonly organizationRepo:IOrganizationRepo
   ) {}
 
   @Get()
@@ -71,7 +74,7 @@ export class OrganizationsController {
   @ApiResponse({ status: 200, description: 'Return user with organization details' })
   @ApiResponse({ status: 404, description: 'User or organization not found' })
   async getUserOrganization(@Param('id') orgId: number, @Param('userId') userId: number) {
-    const organization = await this.organizationsService.findOne(orgId);    
+    const organization = await this.organizationRepo.findOne(orgId);    
     const user = await this.usersClient.send(GET_USER_EVENT, { id: userId }).toPromise();
     return {
       user,

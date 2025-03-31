@@ -1,17 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../../../infrastructure/entities/user.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { UsersController } from './controllers/users.controller';
-import { AuthController } from './controllers/auth.controller';
+import { JwtStrategy } from '../auth/guards/strategies/jwt.strategy';
+import { UsersController } from './users.controller';
+import { AuthController } from '../auth/auth.controller';
 import { UsersService } from './services/users.service';
-import { UsersRepository } from './repositories/users.repository';
-import { AuthService } from './services/auth.service';
-import { UsersEventsController } from './controllers/users-events.controller';
+import { UsersRepository } from '../../../infrastructure/repositories/users.repository';
+import { AuthService } from '../auth/service/auth.service';
+import { UsersEventsExecutor } from './users-events.executor';
+import { USERS_REPO } from './repositories/i-users-repo';
 
 @Module({
   imports: [
@@ -42,9 +43,14 @@ import { UsersEventsController } from './controllers/users-events.controller';
   controllers: [
     UsersController, 
     AuthController,
-    UsersEventsController
+    UsersEventsExecutor
   ],
-  providers: [UsersService, UsersRepository, AuthService, JwtStrategy],
+  providers: [UsersService, UsersRepository, AuthService, JwtStrategy,
+    {
+      provide:USERS_REPO,
+      useClass:UsersRepository
+    }
+  ],
   exports: [UsersService, AuthService],
 })
 export class UsersModule {}

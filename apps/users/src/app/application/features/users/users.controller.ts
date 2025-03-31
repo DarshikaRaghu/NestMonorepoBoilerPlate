@@ -1,11 +1,12 @@
 // apps/users/src/users.controller.ts
 import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, Inject, UseGuards } from '@nestjs/common';
-import { UsersService } from '../services/users.service';
-import { User } from '../entities/user.entity';
+import { UsersService } from './services/users.service';
+import { User } from '../../../infrastructure/entities/user.entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { GET_ORGANIZATION_EVENT } from '../constants/constants';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { GET_ORGANIZATION_EVENT } from '../../constants';
+import {IUserRepo} from './repositories/i-users-repo';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -14,6 +15,7 @@ import { GET_ORGANIZATION_EVENT } from '../constants/constants';
 export class UsersController {
   constructor(private readonly usersService: UsersService,
     @Inject('ORGANIZATION_SERVICE') private readonly organizationClient: ClientProxy,
+    @Inject("IUsersRepo") private readonly userRepo:IUserRepo
   ) {}
 
   @Get()
@@ -65,7 +67,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Return user with organization details' })
   @ApiResponse({ status: 404, description: 'User or organization not found' })
   async getUserOrganization(@Param('id') userId: number, @Param('orgId') orgId: string) {
-    const user = await this.usersService.findOne(userId);    
+    const user = await this.userRepo.findOne(userId);    
     const organization = await this.organizationClient.send(GET_ORGANIZATION_EVENT, { id: orgId }).toPromise();
     
     return {

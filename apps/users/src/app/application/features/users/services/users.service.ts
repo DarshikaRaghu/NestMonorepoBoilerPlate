@@ -1,7 +1,7 @@
 // apps/users/src/users.service.ts
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from '../repositories/users.repository';
-import { User } from '../entities/user.entity';
+import { UsersRepository } from '../../../../infrastructure/repositories/users.repository';
+import { User } from '../../../../infrastructure/entities/user.entity';
 
 @Injectable()
 export class UsersService {
