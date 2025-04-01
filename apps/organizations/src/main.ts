@@ -7,6 +7,28 @@ async function bootstrap() {
   // Create HTTP server for direct access
   const app = await NestFactory.create(OrganizationsModule);
   
+  // Configure Swagger with JWT
+  const config = new DocumentBuilder()
+    .setTitle('Organizations API')
+    .setDescription('The Organizations API description')
+    .setVersion('1.0')
+    .addTag('organizations')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
+    .build();
+  
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   // Add RabbitMQ microservice for inter-service communication
   app.connectMicroservice({
     transport: Transport.RMQ,
@@ -18,17 +40,6 @@ async function bootstrap() {
       },
     },
   });
-
-  // Swagger configuration
-  const config = new DocumentBuilder()
-    .setTitle('Organizations API')
-    .setDescription('The Organizations API description')
-    .setVersion('1.0')
-    .addTag('organizations')
-    .build();
-  
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
 
   // Start all microservices
   await app.startAllMicroservices();

@@ -1,18 +1,21 @@
 import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { OrganizationsService } from './services/organizations.service';
 import { Organization } from '../../../infrastructure/entities/organization.entity';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
 import { GET_USER_EVENT } from '../constanst';
 import { IOrganizationRepo } from './repositories/i-organizations-repo';
-import { JwtAuthGuard } from 'apps/users/src/app/application/features/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@app/common';
 
 @ApiTags('organizations')
+@ApiBearerAuth('JWT-auth')
 @Controller('organization')
+@UseGuards(JwtAuthGuard)
 export class OrganizationsController {
-  constructor(private readonly organizationsService: OrganizationsService,
+  constructor(
+    private readonly organizationsService: OrganizationsService,
     @Inject('USERS_SERVICE') private readonly usersClient: ClientProxy,
-    @Inject("IOrganizationsRepo") private readonly organizationRepo:IOrganizationRepo
+    @Inject("IOrganizationsRepo") private readonly organizationRepo: IOrganizationRepo
   ) {}
 
   @Get()
