@@ -12,7 +12,6 @@ import { CommonModule } from '@app/common';
 
 @Module({
   imports: [
-    AppModule,
     CommonModule,
     TypeOrmModule.forFeature([Organization]),
     ClientsModule.register([
@@ -40,13 +39,15 @@ import { CommonModule } from '@app/common';
       },
     ]),
   ],
-  controllers: [OrganizationsController, OrganizationEventsExecutor
-  ],
-  providers: [OrganizationsService, OrganizationsRepository,
+  controllers: [OrganizationsController, OrganizationEventsExecutor],
+  providers: [
+    OrganizationsService,
+    OrganizationsRepository,
     {
-      provide:ORGANIZATIONS_REPO,
-      useClass:OrganizationsRepository
+      provide: ORGANIZATIONS_REPO,
+      useClass: OrganizationsRepository
     }
   ],
+  exports: [OrganizationsService],
 })
 export class OrganizationsModule {}

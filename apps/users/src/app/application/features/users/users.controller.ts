@@ -1,12 +1,13 @@
 // apps/users/src/users.controller.ts
-import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, Inject, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
 import { UsersService } from './services/users.service';
 import { User } from '../../../infrastructure/entities/user.entity';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiCreatedResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GET_ORGANIZATION_EVENT } from '../../constants';
 import {IUserRepo} from './repositories/i-users-repo';
+import { lastValueFrom } from 'rxjs';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -27,10 +28,10 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
+  @ApiCreatedResponse({ type: User })
   @ApiParam({ name: 'id', description: 'User ID' })
-  @ApiResponse({ status: 200, description: 'Return the user' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User | null> {
+  @HttpCode(HttpStatus.OK)
+  async findOne(   @Param('id') id: number): Promise<User | null> {
     return this.usersService.findOne(id);
   }
 
@@ -68,7 +69,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User or organization not found' })
   async getUserOrganization(@Param('id') userId: number, @Param('orgId') orgId: string) {
     const user = await this.userRepo.findOne(userId);    
-    const organization = await this.organizationClient.send(GET_ORGANIZATION_EVENT, { id: orgId }).toPromise();
+    const organization = await lastValueFrom(this.organizationClient.send(GET_ORGANIZATION_EVENT, { id: orgId }));
     
     return {
       user,

@@ -43,7 +43,5 @@ async function bootstrap() {
   await app.startAllMicroservices();
   // Then start HTTP server
   await app.listen(3000);
-  console.log(`Users service is running on: ${await app.getUrl()}`);
-  console.log(`Swagger documentation is available at: ${await app.getUrl()}/api`);
 }
 bootstrap();

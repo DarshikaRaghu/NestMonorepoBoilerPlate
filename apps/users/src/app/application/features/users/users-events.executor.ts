@@ -9,7 +9,7 @@ export class UsersEventsExecutor {
   constructor(@Inject("IUsersRepo") private readonly userRepo:IUserRepo) {}
 
   @MessagePattern(GET_USER_EVENT)
-  async handleGetUser(data: {  id: number }) {
+  async handleGetUser(data: {  id: number }): Promise<User|null> {
     return this.userRepo.findOne(data.id);
   }
 

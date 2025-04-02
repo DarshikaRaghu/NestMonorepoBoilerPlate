@@ -2,7 +2,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { typeOrmConfig } from '../configuration/database.config';
+import { OrganizationsModule } from '../application/features/organizations/organizations.module';
+import { join } from 'path';
+import { Organization } from './entities/organization.entity';
 
 @Module({
   imports: [
@@ -20,15 +22,17 @@ import { typeOrmConfig } from '../configuration/database.config';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        migrations: [__dirname + '/../migrations/*{.ts,.js}'],
+        entities: [Organization],
+        migrations: [join(__dirname, '../migrations/*{.ts,.js}')],
         migrationsTableName: 'migrations',
         synchronize: configService.get<string>('NODE_ENV') === 'development',
         autoLoadEntities: true,
+        logging: true,
       }),
     }),
-    TypeOrmModule.forRoot(typeOrmConfig),
+   OrganizationsModule,
   ],
   // ...
 })
 export class AppModule {}
+
