@@ -19,10 +19,11 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/nest-microservices-boilerplate/test/jest-e2e.json",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-    "users:migration:generate": "npm run typeorm -- -d apps/users/src/app/configuration/database.config.ts migration:generate ./apps/users/src/app/infrastructure/migrations",
+    "users:migration:generate": "npm run typeorm -- -d apps/users/src/app/configuration/database.config.ts migration:generate apps/users/src/app/infrastructure/migrations/UserMigration",
     "users:migration:run": "npm run typeorm -- migration:run -d apps/users/src/app/configuration/database.config.ts",
-    "organizations:migration:generate": "npm run typeorm -- migration:generate -d apps/organizations/src/config/database.config.ts",
-    "organizations:migration:run": "npm run typeorm -- migration:run -d apps/organizations/src/config/database.config.ts"
+    "users:migration:down": "npm run typeorm -- -d apps/users/src/app/configuration/database.config.ts migration:revert",
+    "organizations:migration:generate": "npm run typeorm -- -d apps/organizations/src/app/configuration/database.config.ts migration:generate apps/organizations/src/app/infrastructure/migrations/OrganizationMigration",
+    "organizations:migration:run": "npm run typeorm -- migration:run -d apps/organizations/src/app/configuration /database.config.ts"
   },
   "dependencies": {
     "@golevelup/nestjs-rabbitmq": "^5.7.0",

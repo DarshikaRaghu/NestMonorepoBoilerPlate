@@ -14,11 +14,12 @@ export class User {
 
   @ApiProperty({ description: 'The username for login' })
   @Column()
-  username: string;
+  name: string;
 
   @ApiProperty({ description: 'The encrypted password of the user' })
   @Column()
   password: string;
+
 
   @BeforeInsert()
   @BeforeUpdate()

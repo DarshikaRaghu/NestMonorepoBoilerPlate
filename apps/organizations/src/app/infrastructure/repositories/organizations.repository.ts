@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Organization } from '../entities/organization.entity';
-import { ORGANIZATIONS_REPO, IOrganizationRepo } from '../../application/features/organizations/repositories/i-organizations-repo';
+import { IOrganizationRepo } from '../../application/features/organizations/repositories/i-organizations-repo';
 
 @Injectable()
 export class OrganizationsRepository implements IOrganizationRepo {

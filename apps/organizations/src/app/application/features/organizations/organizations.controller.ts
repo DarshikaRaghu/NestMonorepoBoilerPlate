@@ -67,7 +67,9 @@ export class OrganizationsController {
   @ApiResponse({ status: 200, description: 'Return the organization' })
   @ApiResponse({ status: 404, description: 'Organization not found' })
   async getOrganization(@Param('id') id: number): Promise<Organization|null> {
-    return this.organizationsService.findOne(id);
+    const organization = await this.organizationRepo.findOne(id);
+    return organization;
+    
   }
 
   @Get(':id/users/:userId')

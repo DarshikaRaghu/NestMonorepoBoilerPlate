@@ -28,6 +28,15 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
+    "notifications": {
+      "type": "application",
+      "root": "apps/notifications",
+      "entryFile": "main",
+      "sourceRoot": "apps/notifications/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notifications/tsconfig.app.json"
+      }
+    },
     "organizations": {
       "type": "application",
       "root": "apps/organizations",
@@ -35,15 +44,6 @@
       "sourceRoot": "apps/organizations/src",
       "compilerOptions": {
         "tsConfigPath": "apps/organizations/tsconfig.app.json"
-      }
-    },
-    "trophy": {
-      "type": "application",
-      "root": "apps/trophy",
-      "entryFile": "main",
-      "sourceRoot": "apps/trophy/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/trophy/tsconfig.app.json"
       }
     },
     "users": {

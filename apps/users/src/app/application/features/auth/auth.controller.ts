@@ -3,6 +3,7 @@ import { AuthService } from './service/auth.service';
 import { UsersService } from '../users/services/users.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '../../../infrastructure/entities/user.entity';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -18,7 +19,7 @@ export class AuthController {
   @ApiResponse({ status: 409, description: 'Username or email already exists' })
   async register(@Body() registerDto: User) {
     // Check if username or email already exists
-    const existingUser = await this.usersService.findByUsername(registerDto.username);
+    const existingUser = await this.usersService.findByUsername(registerDto.name);
     if (existingUser) {
       throw new ConflictException('Username already exists');
     }
@@ -32,7 +33,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Login to get access token' })
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async login(@Body() loginDto: { username: string; password: string }) {
+  async login(@Body() loginDto: LoginDto) {
     const user = await this.authService.validateUser(loginDto.username, loginDto.password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

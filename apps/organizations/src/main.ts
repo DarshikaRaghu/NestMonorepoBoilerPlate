@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { OrganizationsModule } from './app/application/features/organizations/organizations.module';
 import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/infrastructure/app.module';
